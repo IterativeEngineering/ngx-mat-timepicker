@@ -1,0 +1,22 @@
+.ngx-mat-timepicker-control {
+  width: 60px;
+  min-width: 60px;
+
+  .arrows-wrap {
+    position: relative;
+    z-index: 1;
+
+    > .arrow {
+      text-align: center;
+      opacity: 0.5;
+      height: 15px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      user-select: none;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

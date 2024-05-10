@@ -1,0 +1,36 @@
+div.ngx-mat-timepicker-dialog {
+  > mat-dialog-container {
+    padding-top: 0;
+
+    [mat-dialog-content] {
+      padding: 0;
+      max-height: 85vh;
+
+      mat-toolbar.timepicker-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.is-editable {
+          height: auto;
+        }
+      }
+
+      .clock-face {
+        margin: 16px;
+      }
+    }
+
+    div[mat-dialog-actions] {
+      justify-content: flex-end;
+      display: flex;
+      min-width: 200px;
+    }
+  }
+  svg {
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem;
+    fill: #962431;
+  }
+}
