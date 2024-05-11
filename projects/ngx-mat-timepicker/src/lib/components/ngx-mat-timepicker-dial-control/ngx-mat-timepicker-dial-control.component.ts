@@ -91,10 +91,40 @@ export class NgxMatTimepickerDialControlComponent {
         this.focused.next();
     }
 
-    updateTime(): void {
+    updateTime(evt?: Event): void {
         if (this._selectedTime) {
             this.timeChanged.next(this._selectedTime);
             this.previousTime = this._selectedTime.time;
+        }
+        if (evt?.target) {
+            const target: HTMLInputElement = evt.target as HTMLInputElement;
+            // Casting input value to a number is required to trim the leading '0'
+            const value = (+target.value).toString();
+
+            if (value && target.max === '23' && value <= target.max && value.length === 2 && value[0] !== '0') {
+                // Focus minutes
+                const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
+                if (inputs.length > 1) {
+                    inputs[inputs.length - 1].focus();
+                }
+            }
+        }
+    }
+
+    onInputKeydown(evt: KeyboardEvent) {
+        if (evt?.target && evt.code === 'Backspace') {
+            const target: HTMLInputElement = evt.target as HTMLInputElement;
+            if (target.value === '' && target.max === '59') {
+                // Focus hours
+                const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
+                if (inputs.length > 1) {
+                    // setTimeout is required here, because if it's not used,
+                    // the hours value gets changed for a mysterious reason.
+                    window.setTimeout(() => {
+                        inputs[0].focus();
+                    }, 0);
+                }
+            }
         }
     }
 
