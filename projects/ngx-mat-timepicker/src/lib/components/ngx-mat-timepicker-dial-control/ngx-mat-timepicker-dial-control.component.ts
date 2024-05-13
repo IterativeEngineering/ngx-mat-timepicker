@@ -91,10 +91,46 @@ export class NgxMatTimepickerDialControlComponent {
         this.focused.next();
     }
 
-    updateTime(): void {
+    updateTime(evt?: Event): void {
         if (this._selectedTime) {
             this.timeChanged.next(this._selectedTime);
             this.previousTime = this._selectedTime.time;
+        }
+        if (evt?.target) {
+            const target: HTMLInputElement = evt.target as HTMLInputElement;
+            // Casting input value to a number is required to trim the leading '0'
+            const value = (+target.value).toString();
+            const isHoursControl = target.max === '23';
+            const properValueEntered = value <= target.max
+            const enteredTwoDigits = value.length === 2;
+            const firstDigisDifferentThanZero = value[0] !== '0';
+
+            if (value && isHoursControl && properValueEntered && enteredTwoDigits && firstDigisDifferentThanZero) {
+                // Focus minutes
+                const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
+                if (inputs.length > 1) {
+                    inputs[inputs.length - 1].focus();
+                }
+            }
+        }
+    }
+
+    onInputKeydown(evt: KeyboardEvent) {
+        if (evt?.target && evt.code === 'Backspace') {
+            const target: HTMLInputElement = evt.target as HTMLInputElement;
+            const emptyValue = target.value === '';
+            const isMinutesControl = target.max === '59';
+            if (emptyValue && isMinutesControl) {
+                // Focus hours
+                const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
+                if (inputs.length > 1) {
+                    // setTimeout is required here, because if it's not used,
+                    // the hours value gets changed for a mysterious reason.
+                    window.setTimeout(() => {
+                        inputs[0].focus();
+                    }, 0);
+                }
+            }
         }
     }
 
