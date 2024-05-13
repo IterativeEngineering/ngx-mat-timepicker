@@ -100,8 +100,12 @@ export class NgxMatTimepickerDialControlComponent {
             const target: HTMLInputElement = evt.target as HTMLInputElement;
             // Casting input value to a number is required to trim the leading '0'
             const value = (+target.value).toString();
+            const isHoursControl = target.max === '23';
+            const properValueEntered = value <= target.max
+            const enteredTwoDigits = value.length === 2;
+            const firstDigisDifferentThanZero = value[0] !== '0';
 
-            if (value && target.max === '23' && value <= target.max && value.length === 2 && value[0] !== '0') {
+            if (value && isHoursControl && properValueEntered && enteredTwoDigits && firstDigisDifferentThanZero) {
                 // Focus minutes
                 const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
                 if (inputs.length > 1) {
@@ -114,7 +118,9 @@ export class NgxMatTimepickerDialControlComponent {
     onInputKeydown(evt: KeyboardEvent) {
         if (evt?.target && evt.code === 'Backspace') {
             const target: HTMLInputElement = evt.target as HTMLInputElement;
-            if (target.value === '' && target.max === '59') {
+            const emptyValue = target.value === '';
+            const isMinutesControl = target.max === '59';
+            if (emptyValue && isMinutesControl) {
                 // Focus hours
                 const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
                 if (inputs.length > 1) {
