@@ -31,6 +31,10 @@ export class NgxMatTimepickerTimeLocalizerPipe implements PipeTransform {
                 return this._formatTime(NgxMatTimepickerMeasure.hour, time, format);
             }
             case NgxMatTimepickerUnits.MINUTE:
+                const timeStr = String(time);
+                if (timeStr.length < 2) {
+                    return timeStr;
+                }
                 return this._formatTime(NgxMatTimepickerMeasure.minute, time, "mm");
             default:
                 throw new Error(`There is no Time Unit with type ${timeUnit}`);

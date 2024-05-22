@@ -24,6 +24,7 @@ export class NgxMatTimepickerParserPipe implements PipeTransform {
     }
 
     transform(time: string | number, timeUnit = NgxMatTimepickerUnits.HOUR): string {
+        console.log('t', timeUnit);
         if (time == null || time === "") {
             return "";
         }
@@ -33,6 +34,7 @@ export class NgxMatTimepickerParserPipe implements PipeTransform {
         }
 
         if (timeUnit === NgxMatTimepickerUnits.MINUTE) {
+            console.log("trf", time, this._parseTime(time, "mm", NgxMatTimepickerMeasure.minute).toString());
             return this._parseTime(time, "mm", NgxMatTimepickerMeasure.minute).toString();
         }
 
