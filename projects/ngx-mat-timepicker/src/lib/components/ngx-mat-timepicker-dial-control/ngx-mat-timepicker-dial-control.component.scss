@@ -29,3 +29,9 @@ input[type=number] {
   -moz-appearance:textfield;
   appearance: textfield;
 }
+
+.fake-input {
+  &.active {
+    background: #0000001a;
+  }
+}

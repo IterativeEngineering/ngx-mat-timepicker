@@ -1,27 +1,20 @@
-<input class="timepicker-dial__control timepicker-dial__item"
+<input class="timepicker-dial__control timepicker-dial__item timepicker-dial__control_editable" *ngIf="!disabled; else disabledInputTpl"
        [ngClass]="{'active': isActive}"
-       [ngModel]="time | timeLocalizer: timeUnit: true"
-       (ngModelChange)="time = $event"
-       [disabled]="disabled"
+       [ngModel]="time | ngxMatTimepickerParser: timeUnit | timeLocalizer: timeUnit : true"
+       (ngModelChange)="onModelChange($event)"
        (input)="updateTime($event)"
        (keydown)="onInputKeydown($event)"
        (focus)="saveTimeAndChangeTimeUnit($event, timeUnit)"
-       readonly
        [ngxMatTimepickerAutofocus]="isActive"
-       *ngIf="!isEditable;else editableTemplate">
-
-<ng-template #editableTemplate>
-    <input class="timepicker-dial__control timepicker-dial__item timepicker-dial__control_editable"
-           [ngClass]="{'active': isActive}"
-           [ngModel]="time | ngxMatTimepickerParser: timeUnit | timeLocalizer: timeUnit : true"
-           (ngModelChange)="onModelChange($event)"
-           [disabled]="disabled"
-           (input)="updateTime($event)"
-           (keydown)="onInputKeydown($event)"
-           (focus)="saveTimeAndChangeTimeUnit($event, timeUnit)"
-           [ngxMatTimepickerAutofocus]="isActive"
-           type="number"
-           min="0"
-           [max]="timeUnit === NgxMatTimepickerUnits.HOUR ? 23 : 59"
-           >
+       type="number"
+       min="0"
+       [max]="timeUnit === NgxMatTimepickerUnits.HOUR ? 23 : 59"
+>
+<ng-template #disabledInputTpl>
+       <!-- Show div that pretends to be a disabled input. -->
+       <!-- It was done that way, to handle click events,  -->
+       <!-- which is required for clock hand mode to work. -->
+       <div (click)="saveTimeAndChangeTimeUnit($event, timeUnit)" class="fake-input" [class.active]="isActive">
+              <span>{{ time | ngxMatTimepickerParser: timeUnit | timeLocalizer: timeUnit : true }}</span>
+       </div>
 </ng-template>
