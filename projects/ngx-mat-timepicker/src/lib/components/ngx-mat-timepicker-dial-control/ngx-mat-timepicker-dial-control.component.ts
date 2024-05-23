@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ElementRef} from "@angular/core";
+import {Component, EventEmitter, Input, Output, ElementRef, OnInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {NgIf, NgClass} from "@angular/common";
 //
@@ -13,7 +13,7 @@ import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timep
     selector: "ngx-mat-timepicker-dial-control",
     templateUrl: "ngx-mat-timepicker-dial-control.component.html",
     styleUrls: ["ngx-mat-timepicker-dial-control.component.scss"],
-    providers: [NgxMatTimepickerParserPipe],
+    providers: [NgxMatTimepickerParserPipe, NgxMatTimepickerTimeLocalizerPipe],
     standalone: true,
     imports: [
         NgIf,
@@ -24,7 +24,7 @@ import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timep
         NgxMatTimepickerTimeLocalizerPipe
     ]
 })
-export class NgxMatTimepickerDialControlComponent {
+export class NgxMatTimepickerDialControlComponent implements OnInit {
 
     private get _selectedTime(): NgxMatTimepickerClockFace | undefined {
         if (!!this.time) {
@@ -60,7 +60,11 @@ export class NgxMatTimepickerDialControlComponent {
 
     NgxMatTimepickerUnits = NgxMatTimepickerUnits;
 
-    constructor(private _elRef: ElementRef, private _timeParserPipe: NgxMatTimepickerParserPipe) {
+    constructor(private _elRef: ElementRef, private _timeParserPipe: NgxMatTimepickerParserPipe, private _timeLocalizerPipe: NgxMatTimepickerTimeLocalizerPipe) {
+    }
+
+    ngOnInit(): void {
+        this._formatTime();
     }
 
     changeTimeByKeyboard(e: any): void {
@@ -132,6 +136,14 @@ export class NgxMatTimepickerDialControlComponent {
                 }
             }
         }
+    }
+
+    onBlur() {
+        this._formatTime()
+    }
+
+    private _formatTime() {
+        this.time = this._timeLocalizerPipe.transform(this._timeParserPipe.transform(this.time, this.timeUnit), this.timeUnit, true);
     }
 
     private _addTime(amount: number): string {
