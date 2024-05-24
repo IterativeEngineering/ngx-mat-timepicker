@@ -105,7 +105,17 @@ export class NgxMatTimepickerDialControlComponent implements OnInit {
             // Casting input value to a number is required to trim the leading '0'
             const value = (+target.value).toString();
             const isHoursControl = target.max === '23';
-            const properValueEntered = value <= target.max
+            const properValueEntered = +value <= +target.max && target.value.length < 3;
+            if (!properValueEntered) {
+                // If value is not valid, restore previous value
+                target.value = target.dataset['previousVal'];
+                const event = new Event('input', {
+                    bubbles: true,
+                });
+                target.dispatchEvent(event);
+                return;
+            }
+            target.dataset['previousVal'] = value;
             const enteredTwoDigits = value.length === 2;
             const firstDigisDifferentThanZero = value[0] !== '0';
 
