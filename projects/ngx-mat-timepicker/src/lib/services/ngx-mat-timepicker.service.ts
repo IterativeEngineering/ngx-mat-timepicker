@@ -55,8 +55,10 @@ export class NgxMatTimepickerService {
     private _period$ = new BehaviorSubject<NgxMatTimepickerPeriods>(NgxMatTimepickerPeriods.AM);
 
     getFullTime(format: number): string {
-        const selectedHour = this._hour$.getValue().time;
-        const selectedMinute = this._minute$.getValue().time;
+        const hourInput = document.querySelector('input[max="23"]');
+        const minuteInput = document.querySelector('input[max="59"]');
+        const selectedHour = hourInput ? +(document.querySelector('input[max="23"]') as HTMLInputElement).value : this._hour$.getValue().time;
+        const selectedMinute = minuteInput ? +(document.querySelector('input[max="59"]') as HTMLInputElement).value : this._minute$.getValue().time;
         const hour = selectedHour != null ? selectedHour : DEFAULT_HOUR.time;
         const minute = selectedMinute != null ? selectedMinute : DEFAULT_MINUTE.time;
         const period = format === 12 ? this._period$.getValue() : "";
