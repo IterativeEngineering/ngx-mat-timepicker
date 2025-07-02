@@ -6,4 +6,3 @@ Syncing fork with the original repo:
 3. Find the version to merge on https://github.com/tonysamperi/ngx-mat-timepicker/releases
 4. `git merge [tag] --allow-unrelated-histories`
 5. Resolve conflicts by accepting incoming changes
-6. 
