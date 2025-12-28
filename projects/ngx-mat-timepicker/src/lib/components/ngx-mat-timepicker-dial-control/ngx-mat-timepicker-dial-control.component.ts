@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ElementRef, OnInit} from "@angular/core";
+import {Component, EventEmitter, OnDestroy, Input, Output, ElementRef, AfterViewInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {NgIf, NgClass} from "@angular/common";
 //
@@ -8,13 +8,17 @@ import {NgxMatTimepickerParserPipe} from "../../pipes/ngx-mat-timepicker-parser.
 import {NgxMatTimepickerUtils} from "../../utils/ngx-mat-timepicker.utils";
 import {NgxMatTimepickerTimeLocalizerPipe} from "../../pipes/ngx-mat-timepicker-time-localizer.pipe";
 import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timepicker-autofocus.directive";
+import { OnInit } from "@angular/core";
+
+function retainSelection(this: HTMLInputElement) {
+    this.selectionStart = this.selectionEnd;
+}
 
 @Component({
     selector: "ngx-mat-timepicker-dial-control",
     templateUrl: "ngx-mat-timepicker-dial-control.component.html",
     styleUrls: ["ngx-mat-timepicker-dial-control.component.scss"],
-    providers: [NgxMatTimepickerParserPipe, NgxMatTimepickerTimeLocalizerPipe],
-    standalone: true,
+    providers: [NgxMatTimepickerParserPipe],
     imports: [
         NgIf,
         FormsModule,
@@ -24,7 +28,7 @@ import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timep
         NgxMatTimepickerTimeLocalizerPipe
     ]
 })
-export class NgxMatTimepickerDialControlComponent implements OnInit {
+export class NgxMatTimepickerDialControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private get _selectedTime(): NgxMatTimepickerClockFace | undefined {
         if (!!this.time) {
@@ -73,6 +77,14 @@ export class NgxMatTimepickerDialControlComponent implements OnInit {
         if (isTimeDisabledToChange(this.time, char, this.timeList)) {
             e.preventDefault();
         }
+    }
+
+    ngAfterViewInit(): void {
+        this._elRef.nativeElement.querySelector("input").addEventListener("select", retainSelection, false);
+    }
+
+    ngOnDestroy(): void {
+        this._elRef.nativeElement.querySelector("input").removeEventListener("select", retainSelection);
     }
 
     onKeydown(e: any): void {
