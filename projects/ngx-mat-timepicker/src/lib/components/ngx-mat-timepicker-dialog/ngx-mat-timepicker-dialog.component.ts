@@ -27,7 +27,6 @@ import { TTimepickerMode } from "../../models/timepicker-mode.enum";
     styleUrls: ["./ngx-mat-timepicker-dialog.component.scss"],
     templateUrl: "./ngx-mat-timepicker-dialog.component.html",
     encapsulation: ViewEncapsulation.None,
-    standalone: true,
     imports: [
         AsyncPipe,
         // Common
