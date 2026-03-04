@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, Input, Output, ElementRef, AfterViewInit} from "@angular/core";
+import {Component, EventEmitter, OnDestroy, Input, Output, ElementRef, AfterViewInit, OnInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {NgIf, NgClass} from "@angular/common";
 //
@@ -8,9 +8,11 @@ import {NgxMatTimepickerParserPipe} from "../../pipes/ngx-mat-timepicker-parser.
 import {NgxMatTimepickerUtils} from "../../utils/ngx-mat-timepicker.utils";
 import {NgxMatTimepickerTimeLocalizerPipe} from "../../pipes/ngx-mat-timepicker-time-localizer.pipe";
 import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timepicker-autofocus.directive";
-import { OnInit } from "@angular/core";
-
 function retainSelection(this: HTMLInputElement) {
+    if (this.type === "number") {
+        return;
+    }
+
     this.selectionStart = this.selectionEnd;
 }
 
@@ -29,6 +31,7 @@ function retainSelection(this: HTMLInputElement) {
     ]
 })
 export class NgxMatTimepickerDialControlComponent implements OnInit, AfterViewInit, OnDestroy {
+    private _dialInput: HTMLInputElement | null = null;
 
     private get _selectedTime(): NgxMatTimepickerClockFace | undefined {
         if (!!this.time) {
@@ -80,11 +83,17 @@ export class NgxMatTimepickerDialControlComponent implements OnInit, AfterViewIn
     }
 
     ngAfterViewInit(): void {
-        this._elRef.nativeElement.querySelector("input").addEventListener("select", retainSelection, false);
+        this._dialInput = this._elRef.nativeElement.querySelector("input");
+        if (this._dialInput) {
+            this._dialInput.addEventListener("select", retainSelection, false);
+        }
     }
 
     ngOnDestroy(): void {
-        this._elRef.nativeElement.querySelector("input").removeEventListener("select", retainSelection);
+        if (this._dialInput) {
+            this._dialInput.removeEventListener("select", retainSelection);
+            this._dialInput = null;
+        }
     }
 
     onKeydown(e: any): void {
