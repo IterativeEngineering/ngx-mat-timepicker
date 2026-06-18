@@ -1,5 +1,5 @@
 import {Component, Inject, ViewEncapsulation} from "@angular/core";
-import {NgClass, NgSwitch, NgSwitchCase, NgIf, NgTemplateOutlet, AsyncPipe} from "@angular/common";
+import {NgClass, NgTemplateOutlet, AsyncPipe} from "@angular/common";
 import {MAT_DIALOG_DATA, MatDialogRef, MatDialogModule} from "@angular/material/dialog";
 import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from "@angular/material/toolbar";
@@ -31,9 +31,6 @@ import { TTimepickerMode } from "../../models/timepicker-mode.enum";
         AsyncPipe,
         // Common
         NgClass,
-        NgIf,
-        NgSwitch,
-        NgSwitchCase,
         NgTemplateOutlet,
         // Material
         MatButtonModule,
