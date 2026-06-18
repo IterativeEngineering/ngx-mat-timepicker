@@ -42,41 +42,45 @@
 				></ngx-mat-timepicker-dial>
 			</mat-toolbar>
 			<div class="timepicker__main-content">
-				<div class="timepicker__body"
-					 [ngSwitch]="activeTimeUnit">
-					<div *ngSwitchCase="timeUnit.HOUR">
-						<ngx-mat-timepicker-24-hours-face *ngIf="data.format === 24;else ampmHours"
-														  [attr.hidden]="pickerMode === 'keyboard' ? true : null"
-														  [color]="color"
-														  (hourChange)="onHourChange($event)"
-														  [selectedHour]="selectedHour | async"
-														  [minTime]="data.minTime"
-														  [maxTime]="data.maxTime"
-														  [format]="data.format"
-														  (hourSelected)="onHourSelected($event)"></ngx-mat-timepicker-24-hours-face>
-						<ng-template #ampmHours>
-							<ngx-mat-timepicker-12-hours-face
+				<div class="timepicker__body">
+					@switch (activeTimeUnit) {
+						@case (timeUnit.HOUR) {
+							@if (data.format === 24) {
+								<ngx-mat-timepicker-24-hours-face
+										[attr.hidden]="pickerMode === 'keyboard' ? true : null"
+										[color]="color"
+										(hourChange)="onHourChange($event)"
+										[selectedHour]="selectedHour | async"
+										[minTime]="data.minTime"
+										[maxTime]="data.maxTime"
+										[format]="data.format"
+										(hourSelected)="onHourSelected($event)"></ngx-mat-timepicker-24-hours-face>
+							} @else {
+								<ngx-mat-timepicker-12-hours-face
+										[color]="color"
+										(hourChange)="onHourChange($event)"
+										[selectedHour]="selectedHour | async"
+										[period]="selectedPeriod | async"
+										[minTime]="data.minTime"
+										[maxTime]="data.maxTime"
+										(hourSelected)="onHourSelected($event)"></ngx-mat-timepicker-12-hours-face>
+							}
+						}
+						@case (timeUnit.MINUTE) {
+							<ngx-mat-timepicker-minutes-face
+									[attr.hidden]="pickerMode === 'keyboard' ? true : null"
 									[color]="color"
-									(hourChange)="onHourChange($event)"
-									[selectedHour]="selectedHour | async"
-									[period]="selectedPeriod | async"
+									[dottedMinutesInGap]="data.dottedMinutesInGap"
+									[selectedMinute]="selectedMinute | async"
+									[selectedHour]="(selectedHour | async)?.time"
 									[minTime]="data.minTime"
 									[maxTime]="data.maxTime"
-									(hourSelected)="onHourSelected($event)"></ngx-mat-timepicker-12-hours-face>
-						</ng-template>
-					</div>
-					<ngx-mat-timepicker-minutes-face *ngSwitchCase="timeUnit.MINUTE"
-													 [attr.hidden]="pickerMode === 'keyboard' ? true : null"
-													 [color]="color"
-													 [dottedMinutesInGap]="data.dottedMinutesInGap"
-													 [selectedMinute]="selectedMinute | async"
-													 [selectedHour]="(selectedHour | async)?.time"
-													 [minTime]="data.minTime"
-													 [maxTime]="data.maxTime"
-													 [format]="data.format"
-													 [period]="selectedPeriod | async"
-													 [minutesGap]="data.minutesGap"
-													 (minuteChange)="onMinuteChange($event)"></ngx-mat-timepicker-minutes-face>
+									[format]="data.format"
+									[period]="selectedPeriod | async"
+									[minutesGap]="data.minutesGap"
+									(minuteChange)="onMinuteChange($event)"></ngx-mat-timepicker-minutes-face>
+						}
+					}
 				</div>
 			</div>
 		</div>
