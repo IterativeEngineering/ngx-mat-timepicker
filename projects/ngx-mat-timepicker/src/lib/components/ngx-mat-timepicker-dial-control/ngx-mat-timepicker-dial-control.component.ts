@@ -1,6 +1,6 @@
-import {Component, EventEmitter, OnDestroy, Input, Output, ElementRef, AfterViewInit, OnInit} from "@angular/core";
+import {Component, EventEmitter, OnDestroy, Input, Output, ElementRef, AfterViewInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {NgIf, NgClass} from "@angular/common";
+import {NgClass} from "@angular/common";
 //
 import {NgxMatTimepickerClockFace} from "../../models/ngx-mat-timepicker-clock-face.interface";
 import {NgxMatTimepickerUnits} from "../../models/ngx-mat-timepicker-units.enum";
@@ -8,6 +8,8 @@ import {NgxMatTimepickerParserPipe} from "../../pipes/ngx-mat-timepicker-parser.
 import {NgxMatTimepickerUtils} from "../../utils/ngx-mat-timepicker.utils";
 import {NgxMatTimepickerTimeLocalizerPipe} from "../../pipes/ngx-mat-timepicker-time-localizer.pipe";
 import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timepicker-autofocus.directive";
+
+// CUSTOM CODE
 function retainSelection(this: HTMLInputElement) {
     if (this.type === "number") {
         return;
@@ -20,9 +22,8 @@ function retainSelection(this: HTMLInputElement) {
     selector: "ngx-mat-timepicker-dial-control",
     templateUrl: "ngx-mat-timepicker-dial-control.component.html",
     styleUrls: ["ngx-mat-timepicker-dial-control.component.scss"],
-    providers: [NgxMatTimepickerParserPipe, NgxMatTimepickerTimeLocalizerPipe],
+    providers: [NgxMatTimepickerParserPipe],
     imports: [
-        NgIf,
         FormsModule,
         NgClass,
         NgxMatTimepickerAutofocusDirective,
@@ -30,7 +31,7 @@ function retainSelection(this: HTMLInputElement) {
         NgxMatTimepickerTimeLocalizerPipe
     ]
 })
-export class NgxMatTimepickerDialControlComponent implements OnInit, AfterViewInit, OnDestroy {
+export class NgxMatTimepickerDialControlComponent implements AfterViewInit, OnDestroy {
     private _dialInput: HTMLInputElement | null = null;
 
     private get _selectedTime(): NgxMatTimepickerClockFace | undefined {
