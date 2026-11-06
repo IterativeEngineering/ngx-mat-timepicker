@@ -1,3 +1,12 @@
+Syncing fork with the original repo:
+
+1. Add remote:
+`git remote add tonysamperi https://github.com/tonysamperi/ngx-mat-timepicker`
+2. `git fetch tonysamperi`
+3. Find the version to merge on https://github.com/tonysamperi/ngx-mat-timepicker/releases
+4. `git merge [tag] --allow-unrelated-histories`
+5. Resolve conflicts by accepting incoming changes, except for our custom behavior
+
 # ngx-mat-timepicker
 
 [![npm][badge-npm-version]][url-npm] [![npm][badge-npm-downloads]][url-npm] [![MIT licensed][badge-licence]][url-licence] [![Build state][badge-ci-state]][url-ci-state] [![Size][badge-bundle]][url-bundle]
