@@ -2,8 +2,7 @@ import {Directive} from "@angular/core";
 
 /* To override a default toggle icon */
 @Directive({
-    selector: "[ngxMatTimepickerToggleIcon]",
-    standalone: true
+    selector: "[ngxMatTimepickerToggleIcon]"
 })
 
 export class NgxMatTimepickerToggleIconDirective {

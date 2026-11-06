@@ -7,8 +7,7 @@ import {NgxMatTimepickerMeasure} from "../models/ngx-mat-timepicker-measures.enu
 import {DateTime} from "ts-luxon";
 
 @Pipe({
-    name: "timeLocalizer",
-    standalone: true
+    name: "timeLocalizer"
 })
 export class NgxMatTimepickerTimeLocalizerPipe implements PipeTransform {
 
