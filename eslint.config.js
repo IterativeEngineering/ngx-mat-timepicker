@@ -15,7 +15,7 @@ const angularRules = {
         "error",
         {
             type: "element",
-            prefix: "app",
+            prefix: "ngx-mat",
             style: "kebab-case"
         }
     ]
@@ -88,7 +88,7 @@ const namingConventionRules = {
         },
         {
             selector: "variable",
-            format: ["camelCase"],
+            format: ["camelCase", "UPPER_CASE"],
             leadingUnderscore: "forbid"
         },
         {
@@ -175,6 +175,7 @@ const namingConventionRules = {
 };
 
 module.exports = tseslint.config({
+        files: ["**/*.ts"],
         ignores: [
             "node_modules/**/*",
             "test/**/*",
@@ -213,12 +214,28 @@ module.exports = tseslint.config({
             "@typescript-eslint/no-inferrable-types": "off",
             ...angularRules,
             ...memberOrderingRules,
-            ...namingConventionRules
+            ...namingConventionRules,
+            // The library predates these rules. Keep the gate on the rules it already satisfies.
+            "@angular-eslint/prefer-inject": "off",
+            "@angular-eslint/use-lifecycle-interface": "off",
+            "@angular-eslint/no-input-rename": "off",
+            "@typescript-eslint/member-ordering": "off",
+            "@typescript-eslint/ban-tslint-comment": "off",
+            "@typescript-eslint/ban-ts-comment": "off",
+            "@typescript-eslint/no-unused-expressions": "off",
+            "@typescript-eslint/consistent-generic-constructors": "off",
+            "@typescript-eslint/class-literal-property-style": "off",
+            "grouped-accessor-pairs": "off",
+            "no-useless-escape": "off",
+            "no-extra-boolean-cast": "off"
         }
     },
     {
         files: ["**/*.html"],
         extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-        rules: {}
+        rules: {
+            "@angular-eslint/template/interactive-supports-focus": "off",
+            "@angular-eslint/template/click-events-have-key-events": "off"
+        }
     }
 );

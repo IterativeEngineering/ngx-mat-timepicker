@@ -39,7 +39,7 @@
     "bump:beta": "gulp bump:beta",
     "release": "npm publish ./dist/ngx-mat-timepicker",
     "release:beta": "npm publish ./dist/ngx-mat-timepicker --tag beta",
-    "lint": "ng lint",
+    "lint": "ng lint ngx-mat-timepicker",
     "e2e": "ng e2e"
   },
   "dependencies": {
