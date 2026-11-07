@@ -1,8 +1,7 @@
 import {Pipe, PipeTransform} from "@angular/core";
 
 @Pipe({
-    name: "activeHour",
-    standalone: true
+    name: "activeHour"
 })
 export class NgxMatTimepickerActiveHourPipe implements PipeTransform {
 
