@@ -5,8 +5,7 @@ import {NgxMatTimepickerUnits} from "../models/ngx-mat-timepicker-units.enum";
 import {DateTime} from "ts-luxon";
 
 @Pipe({
-    name: "timeFormatter",
-    standalone: true
+    name: "timeFormatter"
 })
 export class NgxMatTimepickerTimeFormatterPipe implements PipeTransform {
 
