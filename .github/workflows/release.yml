@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6.0.3
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Publish GitHub release
+        working-directory: dist/ngx-mat-timepicker
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          tag="v${version}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release ${tag} already exists. Bump the library version to publish a new tarball." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          packed=$(npm pack --json --pack-destination "$RUNNER_TEMP" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s); const item=Array.isArray(j)?j[j.length-1]:j; process.stdout.write(item.filename);})')
+          gh release create "$tag" "$RUNNER_TEMP/${packed}" --title "$tag" --generate-notes
+          echo "Published ${tag}" >> "$GITHUB_STEP_SUMMARY"
