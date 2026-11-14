@@ -7,12 +7,27 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
     steps:
-      - uses: actions/checkout@v6.0.3
-      - uses: actions/setup-node@v6.4.0
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+    - uses: actions/checkout@v3
+    # setup-node's yarn cache calls yarn immediately. The runner image ships
+    # Yarn 1.22.22, which refuses package.json's packageManager pin, so
+    # Corepack has to replace that binary before setup-node runs.
+    - name: Enable Corepack
+      run: |
+        if ! command -v corepack >/dev/null; then
+          npm install -g corepack
+        fi
+        corepack enable
+        corepack prepare --activate
+        yarn --version
+    - name: Use Node.js 22
+      uses: actions/setup-node@v3
+      with:
+        node-version: 22
+        cache: yarn
+    - run: corepack enable
+    - run: yarn install --immutable
+    - run: npm run lint
+    - run: npm run build

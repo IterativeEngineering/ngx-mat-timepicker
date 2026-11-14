@@ -3,12 +3,11 @@ import {
     ElementRef,
     HostListener,
     HostBinding,
-    Inject,
     Input,
     OnChanges,
     OnDestroy,
     SimpleChanges,
-    Optional
+    inject
 } from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {CdkOverlayOrigin} from "@angular/cdk/overlay";
@@ -31,12 +30,10 @@ import {DateTime} from "ts-luxon";
             multi: true
         }
     ],
-    // tslint:disable-next-line:no-host-metadata-property
     host: {
-        "[disabled]": "disabled",
+        "[attr.disabled]": "disabled",
         "(blur)": "onTouched()"
-    },
-    standalone: true
+    }
 })
 export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestroy, OnChanges {
 
@@ -44,9 +41,6 @@ export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestro
         return this._elementRef && this._elementRef.nativeElement;
     }
 
-    get format(): NgxMatTimepickerFormatType {
-        return this._format;
-    }
 
     @Input()
     set format(value: number) {
@@ -60,8 +54,8 @@ export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestro
         this._previousFormat = this._format;
     }
 
-    get max(): string | DateTime {
-        return this._max;
+    get format(): NgxMatTimepickerFormatType {
+        return this._format;
     }
 
     @Input()
@@ -74,8 +68,8 @@ export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestro
         this._max = value;
     }
 
-    get min(): string | DateTime {
-        return this._min;
+    get max(): string | DateTime {
+        return this._max;
     }
 
     @Input()
@@ -88,17 +82,13 @@ export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestro
         this._min = value;
     }
 
+    get min(): string | DateTime {
+        return this._min;
+    }
+
     @Input("ngxMatTimepicker")
     set timepicker(picker: NgxMatTimepickerComponent) {
         this._registerTimepicker(picker);
-    }
-
-    get value(): string {
-        if (!this._value) {
-            return "";
-        }
-
-        return NgxMatTimepickerAdapter.toLocaleTimeString(this._value, {format: this.format, locale: this._locale});
     }
 
     @Input()
@@ -128,6 +118,14 @@ export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestro
         console.warn("Selected time doesn't match min or max value");
     }
 
+    get value(): string {
+        if (!this._value) {
+            return "";
+        }
+
+        return NgxMatTimepickerAdapter.toLocaleTimeString(this._value, {format: this.format, locale: this._locale});
+    }
+
     private set _defaultTime(time: string) {
         this._timepicker.defaultTime = NgxMatTimepickerAdapter.formatTime(time, {
             locale: this._locale,
@@ -139,26 +137,26 @@ export class NgxMatTimepickerDirective implements ControlValueAccessor, OnDestro
         return this._timepickerLocaleSrv.locale;
     }
 
-    @HostBinding("attr.cdkOverlayOrigin") cdkOverlayOrigin: CdkOverlayOrigin =
-        new CdkOverlayOrigin(this._matFormField ? this._matFormField.getConnectedOverlayOrigin() : this._elementRef);
+    @HostBinding("attr.cdkOverlayOrigin") cdkOverlayOrigin: CdkOverlayOrigin;
     @Input() disableClick: boolean;
     @Input() disabled: boolean;
 
+    private _elementRef: ElementRef = inject(ElementRef);
     private _format: NgxMatTimepickerFormatType = 12;
+    private _matFormField: MatFormField = inject(MatFormField, {optional: !0});
     private _max: string | DateTime;
     private _min: string | DateTime;
     private _previousFormat: number;
     private _subsCtrl$: Subject<void> = new Subject<void>();
     private _timepicker: NgxMatTimepickerComponent;
+    private _timepickerLocaleSrv: NgxMatTimepickerLocaleService = inject(NgxMatTimepickerLocaleService);
     private _value: string = "";
 
-    constructor(private _elementRef: ElementRef,
-                private _timepickerLocaleSrv: NgxMatTimepickerLocaleService,
-                @Optional() @Inject(MatFormField) private _matFormField: MatFormField) {
+    constructor() {
+        this.cdkOverlayOrigin = new CdkOverlayOrigin(this._matFormField ? this._matFormField.getConnectedOverlayOrigin() : this._elementRef);
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        // tslint:disable-next-line:no-string-literal
         const vChanges = changes["value"];
         if (vChanges && vChanges.currentValue) {
             this._defaultTime = vChanges.currentValue;

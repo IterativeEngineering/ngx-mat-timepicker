@@ -16,8 +16,7 @@ import {Observable, Subject} from "rxjs";
 import {shareReplay, takeUntil} from "rxjs/operators";
 
 @Directive({
-    selector: "[ngxMatTimepickerBase]",
-    standalone: true
+    selector: "[ngxMatTimepickerBase]"
 })
 export class NgxMatTimepickerBaseDirective implements OnInit, OnDestroy {
 
@@ -110,12 +109,9 @@ export class NgxMatTimepickerBaseDirective implements OnInit, OnDestroy {
     }
 
     @HostListener("keydown", ["$event"])
-    onKeydown(e: KeyboardEvent): void {
-        if (e.key === 'Enter') {
-            this.setTime();
-            return;
-        }
+    onKeydown(e: any): void {
         this._eventSrv.dispatchEvent(e);
+        e.stopPropagation();
     }
 
     onMinuteChange(minute: NgxMatTimepickerClockFace): void {

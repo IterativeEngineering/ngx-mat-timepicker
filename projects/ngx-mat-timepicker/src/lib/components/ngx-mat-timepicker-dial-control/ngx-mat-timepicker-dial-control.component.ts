@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnDestroy, Input, Output, ElementRef, AfterViewInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {NgClass, NgIf} from "@angular/common";
+import {NgClass} from "@angular/common";
 //
 import {NgxMatTimepickerClockFace} from "../../models/ngx-mat-timepicker-clock-face.interface";
 import {NgxMatTimepickerUnits} from "../../models/ngx-mat-timepicker-units.enum";
@@ -9,12 +9,7 @@ import {NgxMatTimepickerUtils} from "../../utils/ngx-mat-timepicker.utils";
 import {NgxMatTimepickerTimeLocalizerPipe} from "../../pipes/ngx-mat-timepicker-time-localizer.pipe";
 import {NgxMatTimepickerAutofocusDirective} from "../../directives/ngx-mat-timepicker-autofocus.directive";
 
-// CUSTOM CODE
 function retainSelection(this: HTMLInputElement) {
-    if (this.type === "number") {
-        return;
-    }
-
     this.selectionStart = this.selectionEnd;
 }
 
@@ -26,14 +21,12 @@ function retainSelection(this: HTMLInputElement) {
     imports: [
         FormsModule,
         NgClass,
-        NgIf,
         NgxMatTimepickerAutofocusDirective,
         NgxMatTimepickerParserPipe,
         NgxMatTimepickerTimeLocalizerPipe
     ]
 })
 export class NgxMatTimepickerDialControlComponent implements AfterViewInit, OnDestroy {
-    private _dialInput: HTMLInputElement | null = null;
 
     private get _selectedTime(): NgxMatTimepickerClockFace | undefined {
         if (!!this.time) {
@@ -67,13 +60,7 @@ export class NgxMatTimepickerDialControlComponent implements AfterViewInit, OnDe
 
     @Output() unfocused = new EventEmitter<void>();
 
-    NgxMatTimepickerUnits = NgxMatTimepickerUnits;
-
-    constructor(private _elRef: ElementRef, private _timeParserPipe: NgxMatTimepickerParserPipe, private _timeLocalizerPipe: NgxMatTimepickerTimeLocalizerPipe) {
-    }
-
-    ngOnInit(): void {
-        this._formatTime();
+    constructor(private _elRef: ElementRef, private _timeParserPipe: NgxMatTimepickerParserPipe) {
     }
 
     changeTimeByKeyboard(e: any): void {
@@ -85,17 +72,11 @@ export class NgxMatTimepickerDialControlComponent implements AfterViewInit, OnDe
     }
 
     ngAfterViewInit(): void {
-        this._dialInput = this._elRef.nativeElement.querySelector("input");
-        if (this._dialInput) {
-            this._dialInput.addEventListener("select", retainSelection, false);
-        }
+        this._elRef.nativeElement.querySelector("input").addEventListener("select", retainSelection, false);
     }
 
     ngOnDestroy(): void {
-        if (this._dialInput) {
-            this._dialInput.removeEventListener("select", retainSelection);
-            this._dialInput = null;
-        }
+        this._elRef.nativeElement.querySelector("input").removeEventListener("select", retainSelection);
     }
 
     onKeydown(e: any): void {
@@ -118,65 +99,11 @@ export class NgxMatTimepickerDialControlComponent implements AfterViewInit, OnDe
         this.focused.next();
     }
 
-    updateTime(evt?: Event): void {
+    updateTime(): void {
         if (this._selectedTime) {
             this.timeChanged.next(this._selectedTime);
             this.previousTime = this._selectedTime.time;
         }
-        if (evt?.target) {
-            const target: HTMLInputElement = evt.target as HTMLInputElement;
-            // Casting input value to a number is required to trim the leading '0'
-            const value = (+target.value).toString();
-            const isHoursControl = target.max === '23';
-            const properValueEntered = +value <= +target.max && target.value.length < 3;
-            if (!properValueEntered) {
-                // If value is not valid, restore previous value
-                target.value = target.dataset['previousVal'];
-                const event = new Event('input', {
-                    bubbles: true,
-                });
-                target.dispatchEvent(event);
-                return;
-            }
-            target.dataset['previousVal'] = value;
-            const enteredTwoDigits = value.length === 2;
-            const firstDigisDifferentThanZero = value[0] !== '0';
-
-            if (value && isHoursControl && properValueEntered && enteredTwoDigits && firstDigisDifferentThanZero) {
-                // Focus minutes
-                const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
-                if (inputs.length > 1) {
-                    inputs[inputs.length - 1].focus();
-                }
-            }
-        }
-    }
-
-    onInputKeydown(evt: KeyboardEvent) {
-        if (evt?.target && evt.code === 'Backspace') {
-            const target: HTMLInputElement = evt.target as HTMLInputElement;
-            const emptyValue = target.value === '';
-            const isMinutesControl = target.max === '59';
-            if (emptyValue && isMinutesControl) {
-                // Focus hours
-                const inputs = Array.from(target.parentElement.parentElement.querySelectorAll('input'));
-                if (inputs.length > 1) {
-                    // setTimeout is required here, because if it's not used,
-                    // the hours value gets changed for a mysterious reason.
-                    window.setTimeout(() => {
-                        inputs[0].focus();
-                    }, 0);
-                }
-            }
-        }
-    }
-
-    onBlur() {
-        this._formatTime()
-    }
-
-    private _formatTime() {
-        this.time = this._timeLocalizerPipe.transform(this._timeParserPipe.transform(this.time, this.timeUnit), this.timeUnit, true);
     }
 
     private _addTime(amount: number): string {

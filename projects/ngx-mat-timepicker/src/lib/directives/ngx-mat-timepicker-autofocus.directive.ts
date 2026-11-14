@@ -2,8 +2,7 @@ import {Directive, ElementRef, Inject, Input, OnChanges, OnDestroy, Optional, DO
 
 
 @Directive({
-    selector: "[ngxMatTimepickerAutofocus]",
-    standalone: true
+    selector: "[ngxMatTimepickerAutofocus]"
 })
 export class NgxMatTimepickerAutofocusDirective implements OnChanges, OnDestroy {
 
